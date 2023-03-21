@@ -4,21 +4,17 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int n, l, taste, cal, max;
+	static int n, l, max;
 	static int[][] ingredient;
 	
-	static void makeBurger(int idx) {
+	static void makeBurger(int idx, int taste, int cal) {
 		if (idx == n) {
 			if (cal > l) return;
 			if (taste > max) max = taste;
 			return;
 		}
-		taste += ingredient[idx][0];
-		cal += ingredient[idx][1];
-		if (cal < l) makeBurger(idx+1);
-		taste -= ingredient[idx][0];
-		cal -= ingredient[idx][1];
-		makeBurger(idx+1);
+		if (cal+ingredient[idx][1] < l) makeBurger(idx+1, taste+ingredient[idx][0], cal+ingredient[idx][1]);
+		makeBurger(idx+1, taste, cal);
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -37,11 +33,9 @@ public class Solution {
 				ingredient[i][1] = Integer.parseInt(token.nextToken()); // 칼로리
 			}
 			
-			taste = 0;
-			cal = 0;
 			max = 0;
 			
-			makeBurger(0);
+			makeBurger(0, 0, 0);
 			
 			System.out.println("#" + t + " " + max);
 		}
