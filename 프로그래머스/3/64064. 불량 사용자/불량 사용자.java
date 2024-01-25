@@ -1,12 +1,10 @@
-import java.util.*;
-
 class Solution {
     public int solution(String[] user_id, String[] banned_id) {
         possible = new HashSet[banned_id.length];
         visited = new boolean[user_id.length];
         
-        for (int i = 0; i < possible.length; i++) {
-            possible[i] = new HashSet<>();
+        for (List<Integer> a : possible) {
+            a = new HashSet<>();
         }
         
         for (int i = 0; i < banned_id.length; i++) {
@@ -18,34 +16,50 @@ class Solution {
         }
         
         array = new int[banned_id.length];
-        answer = new HashSet<>();
+        for (int e : array) {
+            e = -1;
+        }
+        int idx = 0;
+        while (idx < banned_id.length) {
+            if (possible[idx].size() == 1) {
+                int temp = -1;
+                possible[idx].stream().findFirst().ifPresent(element ->
+                    temp = element
+                );
+                array[idx] = temp;
+                visited[temp] = true;
+                for (Set<Integer> set : possible) {
+                    if (set.contains(temp)) set.remove(temp);
+                }
+                idx = 0;
+                continue;
+            }
+            idx++;
+        }
         
+        answer = new HashSet<>();
         build(0);
         return answer.size();
+        
         
     }
     
     public static boolean[] visited;
     public static int[] array;
-    public static Set<String> answer;
+    public static Set<int[]> answer;
     public static Set<Integer>[] possible;
     
     public static void build(int idx) {
         if (idx == array.length) {
-            int[] copy = Arrays.copyOf(array, array.length);
-            Arrays.sort(copy);
-            String temp = "";
-            for (int i : copy) {
-                temp += i;
-            }
-            answer.add(temp);
+            answer.add(Arrays.sort(Arrays.copyOf(array)));
             return;
         }
+        if (possible[idx].size() == 0) build(++idx);
         for (int element : possible[idx]) {
             if (visited[element]) continue;
             array[idx] = element;
             visited[element] = true;
-            build(idx + 1);
+            build(++idx);
             visited[element] = false;
         }
     }
