@@ -1,7 +1,9 @@
 class Solution {
     public int solution(int[] cookie) {
         int ans = 0;
-        // for (int i = 1; i < cookie.length; i++) cookie[i] += cookie[i-1];
+        int max = 0;
+        for (int c : cookie) max += c;
+        max /= 2;
         
         for (int m = 0; m < cookie.length - 1; m++) {
             int i = m;
@@ -13,15 +15,15 @@ class Solution {
                 if (left == right) {
                     ans = Math.max(ans, left);
                     if (--i < 0 || ++r >= cookie.length) break;
-                    left += cookie[i];
-                    right += cookie[r];
+                    if ((left += cookie[i]) > max) break;
+                    if ((right += cookie[r]) > max) break;
                 } else if (left > right) {
                     if (++r >= cookie.length) break;
-                    right += cookie[r];
+                    if ((right += cookie[r]) > max) break;
                 }
                 else {
                     if (--i < 0) break;
-                    left += cookie[i];
+                    if ((left += cookie[i]) > max) break;
                 };
             }
         }
