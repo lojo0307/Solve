@@ -2,35 +2,40 @@ import java.util.*;
 
 class Solution {
     public int solution(String begin, String target, String[] words) {
+        Queue<Node> q = new LinkedList<>();
+        q.offer(new Node(begin, 0));
         boolean[] visited = new boolean[words.length];
-        Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[] {-1, 0});
         while (!q.isEmpty()) {
-            int cur = q.peek()[0];
-            int cnt = q.poll()[1];
+            int cnt = q.peek().cnt;
+            String word = q.poll().word;
             
-            String word = cur == -1 ? begin : words[cur];
             for (int i = 0; i < words.length; i++) {
-                if (visited[i]) continue;
-                if (check(words[i], word)) {
-                    if (words[i].equals(target)) return cnt+1;
-                    visited[i] = true;
-                    q.offer(new int[] {i, cnt+1});
-                }
+                if (visited[i] || !next(word, words[i])) continue;
+                if (words[i].equals(target)) return cnt + 1;
+                visited[i] = true;
+                q.offer(new Node(words[i], cnt+1));
             }
         }
+        
         return 0;
     }
     
-    private boolean check (String a, String b) {
+    static boolean next(String w1, String w2) {
         int cnt = 0;
-        for (int i = 0; i < a.length(); i++) {
-            if (a.charAt(i) != b.charAt(i)) {
-                cnt++;
-                if (cnt > 1) return false;
-            }
+        for(int i = 0; i < w1.length(); i++) {
+            if (w1.charAt(i) == w2.charAt(i)) continue;
+            cnt++;
         }
-        if (cnt == 1) return true;
-        return false;
+        
+        return cnt == 1 ? true : false;
+    }
+}
+
+class Node {
+    int cnt;
+    String word;
+    Node(String word, int cnt) {
+        this.cnt = cnt;
+        this.word = word;
     }
 }
