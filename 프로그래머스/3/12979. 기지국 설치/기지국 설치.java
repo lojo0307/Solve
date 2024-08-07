@@ -1,21 +1,21 @@
+import java.util.*;
+
 class Solution {
     public int solution(int n, int[] stations, int w) {
-        int cur = 1;
-        int idx = 0;
+        Arrays.sort(stations);
+        int idx = 1;
         int cnt = 0;
+        int s = 0;
         
-        while (cur <= n && idx < stations.length) {
-            if (cur < stations[idx] - w) {
+        while (idx <= n) {
+            int wifi = s >= stations.length ? 222222222 : stations[s];
+            if (idx + w < wifi) {
                 cnt++;
-                cur += (w * 2 + 1);
+                idx = idx + w + w + 1;
             } else {
-                cur = stations[idx] + w + 1;
-                idx++;
+                idx = stations[s] + w + 1;
+                s++;
             }
-        }
-        while (cur <= n) {
-            cnt++;
-            cur += (w * 2 + 1);
         }
         
         return cnt;
