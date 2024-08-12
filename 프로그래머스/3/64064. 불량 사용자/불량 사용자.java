@@ -1,77 +1,59 @@
+import java.util.*;
+
 class Solution {
     public int solution(String[] user_id, String[] banned_id) {
-        possible = new HashSet[banned_id.length];
-        visited = new boolean[user_id.length];
-        
-        for (List<Integer> a : possible) {
-            a = new HashSet<>();
-        }
-        
+        arr = new ArrayList[banned_id.length];
         for (int i = 0; i < banned_id.length; i++) {
+            arr[i] = new ArrayList<>();
             for (int j = 0; j < user_id.length; j++) {
-                if (check(user_id[j], banned_id[i])) {
-                    possible[i].add(j);
-                }
+                if (check(user_id[j], banned_id[i])) arr[i].add(j);
             }
         }
         
-        array = new int[banned_id.length];
-        for (int e : array) {
-            e = -1;
-        }
-        int idx = 0;
-        while (idx < banned_id.length) {
-            if (possible[idx].size() == 1) {
-                int temp = -1;
-                possible[idx].stream().findFirst().ifPresent(element ->
-                    temp = element
-                );
-                array[idx] = temp;
-                visited[temp] = true;
-                for (Set<Integer> set : possible) {
-                    if (set.contains(temp)) set.remove(temp);
-                }
-                idx = 0;
-                continue;
-            }
-            idx++;
-        }
+        n = banned_id.length;
+        set = new HashSet<>();
+        ans = new int[n];
+        visited = new boolean[user_id.length];
+        dfs(0);
         
-        answer = new HashSet<>();
-        build(0);
-        return answer.size();
-        
-        
+        return set.size();
     }
     
-    public static boolean[] visited;
-    public static int[] array;
-    public static Set<int[]> answer;
-    public static Set<Integer>[] possible;
+    static List<Integer>[] arr;
+    static int[] ans;
+    static Set<String> set;
+    static boolean[] visited;
+    static int n;
     
-    public static void build(int idx) {
-        if (idx == array.length) {
-            answer.add(Arrays.sort(Arrays.copyOf(array)));
+    public void dfs(int i) {
+        if (i == n) {
+            int[] copy = Arrays.copyOf(ans, n);
+            Arrays.sort(copy);
+            String str = "";
+            for(int j = 0; j < n; j++) str += copy[j];
+            set.add(str);
             return;
         }
-        if (possible[idx].size() == 0) build(++idx);
-        for (int element : possible[idx]) {
-            if (visited[element]) continue;
-            array[idx] = element;
-            visited[element] = true;
-            build(++idx);
-            visited[element] = false;
+        
+        for (int j = 0; j < arr[i].size(); j++) {
+            int cur = arr[i].get(j);
+            if (visited[cur]) continue;
+            visited[cur] = true;
+            ans[i] = cur;
+            dfs(i+1);
+            visited[cur] = false;
         }
+        return;
     }
     
-    public static boolean check(String a, String b) {
-        if (a.length() != b.length()) return false;
-        char[] aa = a.toCharArray();
-        char[] bb = b.toCharArray();
-        for (int i = 0; i < aa.length; i++) {
-            if (bb[i] == '*') continue;
-            if (aa[i] != bb[i]) return false;
+    public boolean check(String uid, String bid) {
+        if (uid.length() != bid.length()) return false;
+        for (int i = 0; i < uid.length(); i++) {
+            char a = bid.charAt(i);
+            if (a == '*') continue;
+            if (a != uid.charAt(i)) return false;
         }
+        
         return true;
     }
 }
