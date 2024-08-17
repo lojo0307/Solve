@@ -1,18 +1,20 @@
-import java.util.*;
 class Solution {
     public long solution(int n, int[] times) {
-        Arrays.sort(times);
-        long left = 0;
-        long right = (long)Math.pow(10, 18);
+        long left = 1;
+        long right = (long)n * times[0];
+        long ans = right;
         
-        while (left < right) {
+        while (left <= right) {
             long mid = (left + right) / 2;
-            long person = 0;
-            for (int t : times) person += mid / t;
-            if (person < n) left = mid + 1;
-            else right = mid;
+            long temp = 0;
+            for (int t : times) temp += (mid / t);
+            if (temp < n) left = mid + 1;
+            else {
+                ans = Math.min(ans, mid);
+                right = mid - 1;
+            }
         }
         
-        return left;
+        return ans;
     }
 }
