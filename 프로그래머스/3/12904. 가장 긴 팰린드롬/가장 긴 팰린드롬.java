@@ -2,26 +2,26 @@ class Solution
 {
     public int solution(String s)
     {
-        char[] a = s.toCharArray();
-        int max = 0;
-        for (int i = 0; i < a.length; i++) { // 문자열이 홀수길이
-            if (max / 2 + i >= a.length) break;
+        int max = 1;
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
             int len = 1;
-            while (i - len >= 0 && i + len < a.length) {
-                if (a[i-len] != a[i+len]) break;
+            while (i - len >= 0 && i + len < arr.length) {
+                if (arr[i-len] != arr[i+len]) break;
                 len++;
             }
-            max = Math.max(--len * 2 + 1, max);
-        }
-        for (int i = 0; i < a.length; i++) { // 문자열이 짝수길이
-            if (max / 2 + i >= a.length) break;
-            int len = 1;
-            while (i - len >= 0 && i + len - 1 < a.length) {
-                if (a[i-len] != a[i+len-1]) break;
+            len = (len - 1) * 2 + 1;
+            max = Math.max(max, len);
+            
+            len = 0;
+            while (i - len >= 0 && i + len + 1 < arr.length) {
+                if (arr[i-len] != arr[i+len+1]) break;
                 len++;
             }
-            max = Math.max(--len * 2, max);
+            len = len * 2;
+            max = Math.max(max, len);
         }
+        
         return max;
     }
 }
