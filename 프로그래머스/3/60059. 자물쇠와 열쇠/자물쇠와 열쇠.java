@@ -1,47 +1,47 @@
-import java.util.*;
 class Solution {
     public boolean solution(int[][] key, int[][] lock) {
+        int n = key.length;
+        int N = lock.length;
+        int m = n+N-1;
+        int[][] k = new int[n][n];
+        int[][] map = new int[N+n+n-2][N+n+n-2];
         
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < N; c++) {
+                map[n-1+r][n-1+c] = lock[r][c];
+            }
+        }
         
-        for (int t = 0; t < 4; t++) {
-            
-            int[][] temp = new int[key.length][key[0].length];
-            for (int r = 0; r < key.length; r++) temp[r] = Arrays.copyOf(key[r], key[r].length);
-
-            for (int r = 0; r < key.length; r++) {
-                for (int c = 0; c < key[0].length; c++) {
-                    key[r][c] = temp[c][key.length - 1 - r];
+        for (int i = 0; i < 4; i++) {
+            for (int r = 0; r < n; r++) {
+                for (int c = 0; c < n; c++) {
+                    k[r][c] = key[c][n-r-1];
                 }
             }
-
-            for (int r = 0; r < key.length; r++) System.out.println(Arrays.toString(key[r]));
             
-            int k1 = -1 * key.length + 1;
-            int k2 = -1 * key[0].length + 1;
+            for (int r = 0; r < n; r++) {
+                for (int c = 0; c < n; c++) {
+                    key[r][c] = k[r][c];
+                }
+            }
             
-            for (int tr = k1; tr < lock.length; tr++) {
-                for (int tc = k2; tc < lock[0].length; tc++) {
-                    // key의 왼쪽 위 맞닿는 위치가 tr, tc
-                    boolean flag = true;
-                    loop : for (int r = 0; r < lock.length; r++) {
-                        for (int c = 0; c < lock[0].length; c++) {
-                            if (r - tr >= 0 && r - tr < key.length && c - tc >= 0 && c - tc < key[0].length) {
-                                if (key[r-tr][c-tc] == lock[r][c]) {
-                                    flag = false;
-                                    break loop;
-                                }
-                            } else {
-                                if (lock[r][c] == 0) {
-                                    flag = false;
-                                    break loop;
-                                }
+            for (int kr = 0; kr < m; kr++) {
+                loop : for (int kc = 0; kc < m; kc++) {
+                    // 열쇠의 0,0 지점이 kr, kc에 위치
+                    for (int r = n-1; r < m; r++) {
+                        for (int c = n-1; c < m; c++) {
+                            if (r-kr < n && c-kc < n && r-kr >= 0 && c-kc >= 0) {
+                                if (map[r][c] == k[r-kr][c-kc]) continue loop;
                             }
+                           else if (map[r][c] == 0) continue loop;
                         }
                     }
-                    if (flag) return true;
+                    
+                    return true;
                 }
             }
         }
+        
         return false;
     }
 }
